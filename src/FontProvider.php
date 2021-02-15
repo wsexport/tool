@@ -2,6 +2,7 @@
 
 namespace App;
 
+use App\Util\OnWikiConfig;
 use DateInterval;
 use Symfony\Component\Process\Process;
 use Symfony\Contracts\Cache\CacheInterface;
@@ -27,9 +28,21 @@ class FontProvider {
 	/** @var string[] Runtime cache of variants of font names. */
 	private $names;
 
-	public function __construct( CacheInterface $cache ) {
+	/** @var OnWikiConfig */
+	private $onWikiConfig;
+
+	public function __construct( CacheInterface $cache, OnWikiConfig $config ) {
 		$this->cache = $cache;
 		$this->names = [];
+		$this->onWikiConfig = $config;
+	}
+
+	/**
+	 * @param string $lang
+	 * @return string
+	 */
+	public function getDefault( string $lang ): string {
+		return $this->onWikiConfig->getDefaultFont( $lang );
 	}
 
 	/**

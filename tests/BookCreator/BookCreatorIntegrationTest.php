@@ -8,6 +8,7 @@ use App\FontProvider;
 use App\Generator\ConvertGenerator;
 use App\GeneratorSelector;
 use App\Util\Api;
+use App\Util\OnWikiConfig;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 use Symfony\Component\Cache\Adapter\ArrayAdapter;
 
@@ -31,7 +32,7 @@ class BookCreatorIntegrationTest extends KernelTestCase {
 
 	public function setUp(): void {
 		self::bootKernel();
-		$this->fontProvider = new FontProvider( new ArrayAdapter() );
+		$this->fontProvider = new FontProvider( new ArrayAdapter(), self::$container->get( OnWikiConfig::class ) );
 		$this->api = self::$container->get( Api::class );
 		$convertGenerator = new ConvertGenerator( $this->fontProvider, $this->api, 10 );
 		$this->generatorSelector = new GeneratorSelector( $this->fontProvider, $this->api, $convertGenerator );

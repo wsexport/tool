@@ -42,5 +42,6 @@
 	"images-field-label": "Form field label for the 'do/don't include images' option field.",
 	"nocache-field-label": "Form field label for the 'disable caching' option field.",
 	"export-button": "Button text for the main export form.",
-	"cache-updated": "Message displayed after a user has requested a cache-refresh.\n\nParameter:\n$1 - the language code that was refreshed."
+	"cache-updated": "Message displayed after a user has requested a cache-refresh.\n\nParameter:\n$1 - the language code that was refreshed.",
+	"onwikiconfig-failure": "Error message displayed if the on-wiki configuration fetching failed.\n\n* $1 - the URL of the config JSON page on Wikisource."
 }

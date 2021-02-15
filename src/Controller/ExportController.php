@@ -101,7 +101,7 @@ class ExportController extends AbstractController {
 			return $this->export( $request, $api, $fontProvider, $generatorSelector );
 		}
 
-		$font = $this->getFont( $request, $api->getLang(), $fontProvider );
+		$font = $this->getFont( $request, $fontProvider );
 		$images = (bool)$request->get( 'images', true );
 		return $this->render( 'export.html.twig', [
 			'fonts' => $fontProvider->getAll(),
@@ -126,7 +126,7 @@ class ExportController extends AbstractController {
 		// Get params.
 		$page = $request->get( 'page' );
 		$format = $this->getFormat( $request );
-		$font = $this->getFont( $request, $api->getLang(), $fontProvider );
+		$font = $this->getFont( $request, $fontProvider );
 		// The `images` checkbox submits as 'false' to disable, so needs extra filtering.
 		$images = filter_var( $request->get( 'images', true ), FILTER_VALIDATE_BOOL );
 
@@ -162,14 +162,14 @@ class ExportController extends AbstractController {
 	 * Get a font name from the given request, falling back to the default (which depends on the language).
 	 *
 	 * @param Request $request The current request.
-	 * @param string $lang A language code.
+	 * @param FontProvider $fontProvider
+	 * @param bool|null $getDefault Whether to try to retrieve the Wikisource's default font.
 	 * @return string|null
 	 */
-	private function getFont( Request $request, $lang, FontProvider $fontProvider ): ?string {
-		// Default font for non-latin languages.
+	private function getFont( Request $request, FontProvider $fontProvider, ?bool $getDefault = true ): ?string {
 		$font = $fontProvider->resolveName( $request->get( 'fonts' ) );
-		if ( !$font && !in_array( $lang, [ 'fr', 'en', 'de', 'it', 'es', 'pt', 'vec', 'pl', 'nl', 'fa', 'he', 'ar', 'zh', 'jp', 'kr' ] ) ) {
-			$font = 'FreeSerif';
+		if ( !$font && $getDefault ) {
+			$font = $fontProvider->getDefault( $this->getLang( $request ) );
 		}
 		if ( !$fontProvider->getOne( $font ) ) {
 			$font = '';
@@ -253,7 +253,7 @@ class ExportController extends AbstractController {
 		}
 		return $this->render( 'export.html.twig', [
 			'fonts' => $fontProvider->getAll(),
-			'font' => $request->get( 'fonts' ),
+			'font' => $this->getFont( $request, $fontProvider, false ),
 			'formats' => GeneratorSelector::getValidFormats(),
 			'format' => $this->getFormat( $request ),
 			'title' => $this->getTitle( $request ),

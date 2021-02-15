@@ -40,5 +40,6 @@
 	"images-field-label": "Do not include images",
 	"nocache-field-label": "Bypass all caching (slower but useful for debugging)",
 	"export-button": "Export",
-	"cache-updated": "The cache has been refreshed for language: $1"
+	"cache-updated": "The cache has been refreshed for language: $1",
+	"onwikiconfig-failure": "Unable to retrieve the on-wiki configuration from: $1"
 }

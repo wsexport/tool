@@ -93,4 +93,20 @@ class BookTest extends WebTestCase {
 		$this->assertStringContainsString( '<input name="page" id="page" type="text" size="30" required="required" class="form-control"
 					value="A &quot;title&quot;" />', $client->getResponse()->getContent() );
 	}
+
+	public function testFonts() {
+		$client = static::createClient();
+		// No font.
+		$client->request( 'GET', '/', [ 'fonts' => 'Not a font name' ] );
+		$this->assertStringContainsString( '<option value="" selected="selected">None (use device default)</option>', $client->getResponse()->getContent() );
+		// Default when there's no on-wiki config.
+		$client->request( 'GET', '/', [ 'lang' => 'en' ] );
+		$this->assertStringContainsString( '<option value="" selected="selected">None (use device default)</option>', $client->getResponse()->getContent() );
+		// Default font from on-wiki config.
+		$client->request( 'GET', '/', [ 'lang' => 'beta' ] );
+		$this->assertStringContainsString( '<option value="DejaVu&#x20;Sans&#x20;Mono" selected="selected">', $client->getResponse()->getContent() );
+		// Default is overridden in request.
+		$client->request( 'GET', '/', [ 'lang' => 'beta', 'fonts' => 'DejaVu Serif' ] );
+		$this->assertStringContainsString( '<option value="DejaVu&#x20;Serif" selected="selected">', $client->getResponse()->getContent() );
+	}
 }

@@ -3,8 +3,16 @@
 namespace App\Tests;
 
 use App\FontProvider;
+use App\Util\Api;
+use App\Util\OnWikiConfig;
+use GuzzleHttp\Client;
+use GuzzleHttp\Handler\MockHandler;
+use GuzzleHttp\HandlerStack;
+use Krinkle\Intuition\Intuition;
 use PHPUnit\Framework\TestCase;
+use Psr\Log\NullLogger;
 use Symfony\Component\Cache\Adapter\ArrayAdapter;
+use Symfony\Component\Cache\Adapter\NullAdapter;
 
 class FontProviderTest extends TestCase {
 
@@ -13,7 +21,9 @@ class FontProviderTest extends TestCase {
 
 	protected function setUp(): void {
 		parent::setUp();
-		$this->fontProvider = new FontProvider( new ArrayAdapter() );
+		$client = new Client( [ 'handler' => HandlerStack::create( new MockHandler( [] ) ) ] );
+		$api = new Api( new NullLogger(), new NullAdapter(), new NullAdapter(), $client, 0 );
+		$this->fontProvider = new FontProvider( new ArrayAdapter(), new OnWikiConfig( $api, new ArrayAdapter(), new Intuition() ) );
 	}
 
 	/**
