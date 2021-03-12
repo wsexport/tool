@@ -9,6 +9,7 @@ use App\Util\Api;
 use App\Util\Util;
 use Exception;
 use IntlDateFormatter;
+use Krinkle\Intuition\Intuition;
 use ZipArchive;
 
 /**
@@ -33,9 +34,13 @@ class EpubGenerator implements FormatGenerator {
 	/** @var Api */
 	protected $api;
 
-	public function __construct( FontProvider $fontProvider, Api $api ) {
+	/** @var Intuition */
+	private $intuition;
+
+	public function __construct( FontProvider $fontProvider, Api $api, Intuition $intuition ) {
 		$this->fontProvider = $fontProvider;
 		$this->api = $api;
+		$this->intuition = $intuition;
 	}
 
 	/**
@@ -398,17 +403,23 @@ class EpubGenerator implements FormatGenerator {
 	}
 
 	private function getXhtmlAbout( Book $book, $wsUrl ) {
-		$list = '<ul>';
-		$listBot = '<ul>';
-		foreach ( $book->credits as $name => $value ) {
-			if ( $value[ 'bot' ] !== null ) {
-				$listBot .= '<li>' . htmlspecialchars( $name, ENT_QUOTES ) . "</li>\n";
-			} else {
-				$list .= '<li>' . htmlspecialchars( $name, ENT_QUOTES ) . "</li>\n";
+		if ( empty( $book->credits ) ) {
+			$list = $this->intuition->msg( 'credits-default-message' ) ??
+					'credits-default-message missing';
+			$listBot = '';
+		} else {
+			$list = '<ul>';
+			$listBot = '<ul>';
+			foreach ( $book->credits as $name => $value ) {
+				if ( $value[ 'bot' ] !== null ) {
+					$listBot .= '<li>' . htmlspecialchars( $name, ENT_QUOTES ) . "</li>\n";
+				} else {
+					$list .= '<li>' . htmlspecialchars( $name, ENT_QUOTES ) . "</li>\n";
+				}
 			}
+			$list .= '</ul>';
+			$listBot .= '</ul>';
 		}
-		$list .= '</ul>';
-		$listBot .= '</ul>';
 
 		$about = $this->api->getAboutPage();
 		if ( $about == '' ) {

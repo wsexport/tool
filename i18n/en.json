@@ -37,6 +37,8 @@
 	"no-font-option": "None (use device default)",
 	"font-field-help": "Choose from $1 available fonts.",
 	"options-label": "Options:",
+	"credits-field-label": "Exclude editor credits (faster download)",
+	"credits-default-message": "This e-book comes from the free online library Wikisource, under the terms of the Creative Commons.",
 	"images-field-label": "Do not include images",
 	"nocache-field-label": "Bypass all caching (slower but useful for debugging)",
 	"export-button": "Export",

@@ -104,6 +104,7 @@ class ExportController extends AbstractController {
 		}
 
 		$font = $this->getFont( $request, $api->getLang(), $fontProvider );
+		$credits = (bool)$request->get( 'credits', true );
 		$images = (bool)$request->get( 'images', true );
 		return $this->render( 'export.html.twig', [
 			'fonts' => $fontProvider->getAll(),
@@ -113,6 +114,7 @@ class ExportController extends AbstractController {
 			'title' => $this->getTitle( $request ),
 			'langs' => $this->getLangs( $request ),
 			'lang' => $this->getLang( $request ),
+			'credits' => $credits,
 			'images' => $images,
 			'nocache' => $nocache,
 			'enableCache' => $this->enableCache,
@@ -130,6 +132,8 @@ class ExportController extends AbstractController {
 		$page = $request->get( 'page' );
 		$format = $this->getFormat( $request );
 		$font = $this->getFont( $request, $api->getLang(), $fontProvider );
+		// The `credits` checkbox submits as 'false' to disable, so needs extra filtering.
+		$credits = filter_var( $request->get( 'credits', true ), FILTER_VALIDATE_BOOL );
 		// The `images` checkbox submits as 'false' to disable, so needs extra filtering.
 		$images = filter_var( $request->get( 'images', true ), FILTER_VALIDATE_BOOL );
 
@@ -139,7 +143,7 @@ class ExportController extends AbstractController {
 		}
 
 		// Generate ebook.
-		$options = [ 'images' => $images, 'fonts' => $font ];
+		$options = [ 'images' => $images, 'fonts' => $font, 'credits' => $credits ];
 		$creator = BookCreator::forApi( $api, $format, $options, $generatorSelector, $creditRepo );
 		$creator->create( $page );
 
@@ -262,6 +266,7 @@ class ExportController extends AbstractController {
 			'title' => $this->getTitle( $request ),
 			'langs' => $this->getLangs( $request ),
 			'lang' => $this->getLang( $request ),
+			'credits' => true,
 			'images' => true,
 			'messages' => [
 				'danger' => [ $message ],

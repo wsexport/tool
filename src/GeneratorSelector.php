@@ -8,6 +8,7 @@ use App\Generator\EpubGenerator;
 use App\Generator\FormatGenerator;
 use App\Util\Api;
 use Exception;
+use Krinkle\Intuition\Intuition;
 
 class GeneratorSelector {
 
@@ -43,10 +44,14 @@ class GeneratorSelector {
 	/** @var ConvertGenerator */
 	private $convertGenerator;
 
-	public function __construct( FontProvider $fontProvider, Api $api, ConvertGenerator $convertGenerator ) {
+	/** @var Intuition */
+	private $intuition;
+
+	public function __construct( FontProvider $fontProvider, Api $api, ConvertGenerator $convertGenerator, Intuition $intuition ) {
 		$this->fontProvider = $fontProvider;
 		$this->api = $api;
 		$this->convertGenerator = $convertGenerator;
+		$this->intuition = $intuition;
 	}
 
 	/**
@@ -69,7 +74,7 @@ class GeneratorSelector {
 			$format = self::$aliases[$format];
 		}
 		if ( $format === 'epub-3' ) {
-			return new EpubGenerator( $this->fontProvider, $this->api );
+			return new EpubGenerator( $this->fontProvider, $this->api, $this->intuition );
 		} elseif ( in_array( $format, ConvertGenerator::getSupportedTypes() ) ) {
 			$this->convertGenerator->setFormat( $format );
 			return $this->convertGenerator;

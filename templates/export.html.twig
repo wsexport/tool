@@ -58,15 +58,25 @@
 			<label class="col-lg-2 control-label">{{ msg( 'options-label' ) }}</label>
 
 			<div class="col-lg-10">
-				<label class="checkbox-inline">
-					<input type="checkbox" value="false" {% if not images %}checked="checked"{% endif %} name="images" />
-					{{ msg( 'images-field-label' ) }}
-				</label>
-				{% if enableCache %}
-					<label class="checkbox-inline">
-						<input type="checkbox" value="1" {% if nocache %}checked="checked"{% endif %} name="nocache" />
-						{{ msg( 'nocache-field-label' ) }}
+				<div class="checkbox">
+					<label>
+						<input type="checkbox" value="false" {% if not credits %}checked="checked"{% endif %} name="credits" />
+						{{ msg( 'credits-field-label' ) }}
 					</label>
+				</div>
+				<div class="checkbox">
+					<label>
+						<input type="checkbox" value="false" {% if not images %}checked="checked"{% endif %} name="images" />
+						{{ msg( 'images-field-label' ) }}
+					</label>
+				</div>
+				{% if enableCache %}
+					<div class="checkbox">
+						<label class="checkbox">
+							<input type="checkbox" value="1" {% if nocache %}checked="checked"{% endif %} name="nocache" />
+							{{ msg( 'nocache-field-label' ) }}
+						</label>
+					</div>
 				{% endif %}
 			</div>
 		</div>

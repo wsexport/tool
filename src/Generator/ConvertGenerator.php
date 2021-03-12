@@ -7,6 +7,7 @@ use App\FontProvider;
 use App\Util\Api;
 use App\Util\Util;
 use InvalidArgumentException;
+use Krinkle\Intuition\Intuition;
 use Symfony\Component\Process\Process;
 
 /**
@@ -86,12 +87,16 @@ class ConvertGenerator implements FormatGenerator {
 	/** @var Api */
 	private $api;
 
+	/** @var Intuition */
+	private $intuition;
+
 	/** @var int Command timeout in seconds. */
 	private $timeout;
 
-	public function __construct( FontProvider $fontProvider, Api $api, int $timeout ) {
+	public function __construct( FontProvider $fontProvider, Api $api, Intuition $intuition, int $timeout ) {
 		$this->fontProvider = $fontProvider;
 		$this->api = $api;
+		$this->intuition = $intuition;
 		$this->timeout = $timeout;
 	}
 
@@ -144,7 +149,7 @@ class ConvertGenerator implements FormatGenerator {
 	}
 
 	private function createEpub( Book $book ) {
-		$epubGenerator = new EpubGenerator( $this->fontProvider, $this->api );
+		$epubGenerator = new EpubGenerator( $this->fontProvider, $this->api, $this->intuition );
 		return $epubGenerator->create( $book );
 	}
 

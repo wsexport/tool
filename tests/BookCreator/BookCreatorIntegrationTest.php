@@ -9,6 +9,7 @@ use App\Generator\ConvertGenerator;
 use App\GeneratorSelector;
 use App\Repository\CreditRepository;
 use App\Util\Api;
+use Krinkle\Intuition\Intuition;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 use Symfony\Component\Cache\Adapter\ArrayAdapter;
 
@@ -33,12 +34,16 @@ class BookCreatorIntegrationTest extends KernelTestCase {
 	/** @var EpubCheck */
 	private $epubCheck;
 
+	/** @var Intuition */
+	private $intuition;
+
 	public function setUp(): void {
 		self::bootKernel();
 		$this->fontProvider = new FontProvider( new ArrayAdapter() );
 		$this->api = self::$container->get( Api::class );
-		$convertGenerator = new ConvertGenerator( $this->fontProvider, $this->api, 10 );
-		$this->generatorSelector = new GeneratorSelector( $this->fontProvider, $this->api, $convertGenerator );
+		$this->intuition = self::$container->get( Intuition::class );
+		$convertGenerator = new ConvertGenerator( $this->fontProvider, $this->api, $this->intuition, 10 );
+		$this->generatorSelector = new GeneratorSelector( $this->fontProvider, $this->api, $convertGenerator, $this->intuition );
 		$this->creditRepository = self::$container->get( CreditRepository::class );
 		$this->epubCheck = self::$container->get( EpubCheck::class );
 	}

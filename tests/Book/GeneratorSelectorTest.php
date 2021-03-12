@@ -8,6 +8,7 @@ use App\Generator\EpubGenerator;
 use App\GeneratorSelector;
 use App\Util\Api;
 use Exception;
+use Krinkle\Intuition\Intuition;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 use Symfony\Component\Cache\Adapter\ArrayAdapter;
 
@@ -25,13 +26,17 @@ class GeneratorSelectorTest extends KernelTestCase {
 	/** @var GeneratorSelector */
 	private $generatorSelector;
 
+	/** @var Intuition */
+	private $intuition;
+
 	public function setUp(): void {
 		parent::setUp();
 		$this->fontProvider = new FontProvider( new ArrayAdapter() );
 		self::bootKernel();
 		$this->api = self::$container->get( Api::class );
-		$convertGenerator = new ConvertGenerator( $this->fontProvider, $this->api, 10 );
-		$this->generatorSelector = new GeneratorSelector( $this->fontProvider, $this->api, $convertGenerator );
+		$this->intuition = self::$container->get( Intuition::class );
+		$convertGenerator = new ConvertGenerator( $this->fontProvider, $this->api, $this->intuition, 10 );
+		$this->generatorSelector = new GeneratorSelector( $this->fontProvider, $this->api, $convertGenerator, $this->intuition );
 	}
 
 	public function testGetUnknownGeneratorRaisesException() {
